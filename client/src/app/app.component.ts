@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { AuthService } from './auth/servcies/auth.service';
+import { AuthService } from './auth/services/auth.service';
 import { CurrentUser } from './auth/interfaces/current-user.interface';
 
 @Component({
@@ -15,11 +15,13 @@ export class AppComponent implements OnInit {
   ngOnInit(): void {
     this.authService.getCurrentUser().subscribe({
       next: (currentUser: CurrentUser) => {
-        console.log(currentUser);
+        this.authService.setCurrentUser(currentUser);
       },
       error: (_) => {
         this.authService.setCurrentUser(null);
       },
     });
+
+    this.authService.isLoggedIn$.subscribe(res => console.log('IsLoggedIn', res));
   }
 }
