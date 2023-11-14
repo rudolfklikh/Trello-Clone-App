@@ -21,7 +21,7 @@ export const HOME_GUARD: CanActivateFn = (
         return true;
       }
 
-      router.navigate(['auth/login']);
+      router.navigate(['/home']);
       return false;
     })
   );

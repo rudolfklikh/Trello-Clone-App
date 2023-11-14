@@ -7,7 +7,9 @@ import { NullOrUndefined } from '../../shared/types/null-or-undefined.type';
 import { RegisterRequest } from '../interfaces/register-request.interface';
 import { LoginRequest } from '../interfaces/login-request.interface';
 
-@Injectable()
+@Injectable({
+  providedIn: 'root'
+})
 export class AuthService {
   currentUser$ = new BehaviorSubject<CurrentUser | NullOrUndefined>(undefined);
   isLoggedIn$: Observable<boolean> = this.currentUser$.pipe(
@@ -41,5 +43,10 @@ export class AuthService {
 
   setCurrentUser(currentUser: CurrentUser | null): void {
     this.currentUser$.next(currentUser);
+  }
+
+  logout(): void {
+    localStorage.removeItem('token');
+    this.currentUser$.next(null);
   }
 }
