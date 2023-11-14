@@ -10,13 +10,17 @@ const routes: Routes = [
         path: 'auth',
         loadChildren: () =>
           import('./auth/auth.module').then((m) => m.AuthModule),
-        // canActivate: [AUTH_GUARD],
+        canActivate: [AUTH_GUARD],
       },
       {
         path: 'home',
         loadChildren: () =>
           import('./home/home.module').then((m) => m.HomeModule),
-        // canActivate: [AUTH_GUARD],
+      },
+      {
+        path: 'boards',
+        loadChildren: () => import('./boards/boards.module').then((m) => m.BoardsModule),
+        canActivate: [HOME_GUARD],
       },
       {
         path: '',
