@@ -1,6 +1,5 @@
-export interface Board {
+export interface Column {
     id: string;
-    userId: string;
     title: string;
     createdAt: string;
     updatedAt: string;

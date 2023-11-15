@@ -5,6 +5,7 @@ import { RegisterRequest } from '../../interfaces/register-request.interface';
 import { CurrentUser } from '../../interfaces/current-user.interface';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Router } from '@angular/router';
+import { SocketService } from 'src/app/shared/services/socket.service';
 
 @Component({
   selector: 'auth-register',
@@ -20,7 +21,7 @@ export class RegisterComponent {
     password: ['', Validators.required],
   });
 
-  constructor(private authService: AuthService, private fb: FormBuilder, private router: Router) {}
+  constructor(private authService: AuthService, private fb: FormBuilder, private router: Router, private socketService: SocketService) {}
  
   onSubmit(): void {
     if (!this.form.valid) {
@@ -31,6 +32,7 @@ export class RegisterComponent {
       next: (user: CurrentUser) => {
         this.authService.setToken(user);
         this.authService.setCurrentUser(user);
+        this.socketService.setupSocketConnection(user);
         this.errorMessage = null;
 
         this.router.navigate(['/']);

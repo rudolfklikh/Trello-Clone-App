@@ -6,6 +6,7 @@ import { RegisterRequest } from '../../interfaces/register-request.interface';
 import { AuthService } from '../../services/auth.service';
 import { LoginRequest } from '../../interfaces/login-request.interface';
 import { Router } from '@angular/router';
+import { SocketService } from 'src/app/shared/services/socket.service';
 
 @Component({
   selector: 'auth-login',
@@ -20,7 +21,7 @@ export class LoginComponent {
     password: ['', Validators.required],
   });
 
-  constructor(private authService: AuthService, private fb: FormBuilder, private router: Router) {}
+  constructor(private authService: AuthService, private fb: FormBuilder, private router: Router, private socketService: SocketService) {}
 
   onSubmit(): void {
     if (!this.form.valid) {
@@ -29,9 +30,9 @@ export class LoginComponent {
 
     this.authService.login(this.form.value as LoginRequest).subscribe({
       next: (user: CurrentUser) => {
-        console.log(user, 'User in Login');
         this.authService.setToken(user);
         this.authService.setCurrentUser(user);
+        this.socketService.setupSocketConnection(user);
         this.errorMessage = null;
 
         this.router.navigate(['/']);

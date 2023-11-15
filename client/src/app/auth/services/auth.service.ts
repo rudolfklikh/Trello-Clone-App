@@ -6,6 +6,7 @@ import { environment } from '../../../environments/environment';
 import { NullOrUndefined } from '../../shared/types/null-or-undefined.type';
 import { RegisterRequest } from '../interfaces/register-request.interface';
 import { LoginRequest } from '../interfaces/login-request.interface';
+import { SocketService } from 'src/app/shared/services/socket.service';
 
 @Injectable({
   providedIn: 'root'
@@ -17,7 +18,7 @@ export class AuthService {
     map((currentUser) => !!currentUser)
   );
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient, private socketService: SocketService) {}
 
   getCurrentUser(): Observable<CurrentUser> {
     return this.http.get<CurrentUser>(`${environment.apiUrl}/user`);
@@ -48,5 +49,6 @@ export class AuthService {
   logout(): void {
     localStorage.removeItem('token');
     this.currentUser$.next(null);
+    this.socketService.disconnect();
   }
 }
