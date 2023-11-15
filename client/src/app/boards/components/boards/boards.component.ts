@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { BoardInterface } from 'src/app/shared/interfaces/board.interface';
+import { Board } from 'src/app/shared/interfaces/board.interface';
 import { BoardsService } from 'src/app/shared/services/boards.service';
 
 @Component({
@@ -8,7 +8,7 @@ import { BoardsService } from 'src/app/shared/services/boards.service';
   styleUrls: ['./boards.component.scss']
 })
 export class BoardsComponent implements OnInit {
-  boards: BoardInterface[] = [];
+  boards: Board[] = [];
 
   constructor(private boardsService: BoardsService) {}
 
