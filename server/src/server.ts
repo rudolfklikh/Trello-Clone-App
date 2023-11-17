@@ -13,6 +13,7 @@ import User from './models/user';
 import * as usersController from './controllers/users';
 import * as boardsController from './controllers/boards';
 import * as columnsController from './controllers/columns';
+import * as tasksController from './controllers/tasks';
 
 import { SocketEvents } from './enums/socket-events.enum';
 import { secret } from './config';
@@ -47,8 +48,11 @@ app.get('/api/user', authMiddleware, usersController.currentUser);
 
 app.get('/api/boards', authMiddleware, boardsController.getBoards);
 app.get('/api/boards/:boardId', authMiddleware, boardsController.getBoard);
-app.get('/api/boards/:boardId/columns', authMiddleware, columnsController.getColumns);
 app.post('/api/boards', authMiddleware, boardsController.createBoard);
+
+app.get('/api/boards/:boardId/columns', authMiddleware, columnsController.getColumns);
+
+app.get('/api/boards/:columnId/tasks', authMiddleware, tasksController.getTasks)
 
 io.use(async (socket: Socket, next) => {
     try {
@@ -77,6 +81,10 @@ io.use(async (socket: Socket, next) => {
     socket.on(SocketEvents.COLUMNS_CREATE, (data) => {
         columnsController.createColumn(io, socket, data);
     });
+
+    socket.on(SocketEvents.TASK_CREATE, (data) => {
+        tasksController.createTask(io, socket, data);
+    })
 });
 
 
