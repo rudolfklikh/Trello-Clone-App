@@ -1,7 +1,7 @@
 import { Schema, model } from "mongoose";
-import { ColumnDocument } from "../types/column.interface";
+import { TaskDocument } from "../types/task.interface";
 
-const columnSchema = new Schema<ColumnDocument>(
+const taskSchema = new Schema<TaskDocument>(
   {
     title: {
       type: String,
@@ -11,7 +11,7 @@ const columnSchema = new Schema<ColumnDocument>(
       type: Schema.Types.ObjectId,
       required: true,
     },
-    boardId: {
+    columnId: {
         type: Schema.Types.ObjectId,
         required: true,
     },
@@ -19,4 +19,4 @@ const columnSchema = new Schema<ColumnDocument>(
   { timestamps: true }
 );
 
-export default model<ColumnDocument>("Column", columnSchema);
+export default model<TaskDocument>("Task", taskSchema);

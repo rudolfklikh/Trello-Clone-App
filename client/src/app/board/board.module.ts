@@ -6,6 +6,7 @@ import { BoardService } from './services/board.service';
 import { ColumnsService } from '../shared/services/columns.service';
 import { TopbarComponent } from '../shared/components/topbar/topbar.component';
 import { InlineFormComponent } from '../shared/components/inline-form/inline-form.component';
+import { TasksService } from '../shared/services/tasks.service';
 
 
 @NgModule({
@@ -18,6 +19,6 @@ import { InlineFormComponent } from '../shared/components/inline-form/inline-for
     TopbarComponent,
     InlineFormComponent
   ],
-  providers: [BoardService, ColumnsService]
+  providers: [BoardService, ColumnsService, TasksService]
 })
 export class BoardModule { }

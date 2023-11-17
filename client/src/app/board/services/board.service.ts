@@ -3,6 +3,7 @@ import { BehaviorSubject } from 'rxjs';
 import { SocketEvents } from 'src/app/shared/enums/socket-events.enum';
 import { Board } from 'src/app/shared/interfaces/board.interface';
 import { Column } from 'src/app/shared/interfaces/column.interface';
+import { Task } from 'src/app/shared/interfaces/task.interface';
 import { SocketService } from 'src/app/shared/services/socket.service';
 
 @Injectable()
@@ -23,6 +24,19 @@ export class BoardService {
 
   addColumn(column: Column): void {
     this.columns$.next([...this.columns$.getValue(), column]);
+  }
+  
+  addTask(task: Task): void {
+    const columnIndx = this.columns$.getValue().findIndex(col => col.id === task.columnId);
+
+    if (columnIndx !== -1) {
+      const updatedColumn = this.columns$.getValue()[columnIndx];
+
+      updatedColumn.tasks?.push(task);
+
+      this.columns$.getValue().splice(columnIndx, 1, updatedColumn);
+      this.columns$.next([...this.columns$.getValue()]);
+    }
   }
 
   leaveBoard(boardId: string): void {
