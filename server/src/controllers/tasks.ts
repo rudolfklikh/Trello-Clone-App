@@ -1,6 +1,5 @@
 import { Response, NextFunction } from "express";
 import { ExpressRequest } from "../types/express-request.interface";
-import ColumnModel from "../models/column";
 import TaskModel from '../models/task';
 import { Server } from "socket.io";
 import { Socket } from "../types/socket-request.interface";
