@@ -13,4 +13,8 @@ export enum SocketEvents {
     TASK_CREATE = 'task:create',
     TASK_CREATE_SUCCESS = 'task:createSuccess',
     TASK_CREATE_FAILURE = 'task:createFailure',
+
+    TASKS_UPDATE = 'tasks:update',
+    TASKS_UPDATE_SUCCESS = 'tasks:updateSuccess',
+    TASKS_UPDATE_FAILURE = 'tasks:updateFailure',
 }

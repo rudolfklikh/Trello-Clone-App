@@ -4,6 +4,7 @@ export interface Task {
     title: string;
     createdAt: Date;
     updatedAt: Date;
+    orderNumber: number;
     userId: Schema.Types.ObjectId; // ID inside mongoose
     columnId: Schema.Types.ObjectId; // ID inside mongoose
 }

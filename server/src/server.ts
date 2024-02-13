@@ -90,6 +90,10 @@ io.use(async (socket: Socket, next) => {
     socket.on(SocketEvents.TASK_CREATE, (data) => {
         tasksController.createTask(io, socket, data);
     })
+
+    socket.on(SocketEvents.TASKS_UPDATE, (data) => {
+        tasksController.updateTasks(io, socket, data);
+    })
 });
 
 
