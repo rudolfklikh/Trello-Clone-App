@@ -15,6 +15,10 @@ const columnSchema = new Schema<ColumnDocument>(
         type: Schema.Types.ObjectId,
         required: true,
     },
+    orderNumber: {
+      type: Number,
+      required: true,
+    }
   },
   { timestamps: true }
 );

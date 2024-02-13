@@ -4,6 +4,7 @@ export interface Column {
     title: string;
     createdAt: Date;
     updatedAt: Date;
+    orderNumber: number;
     userId: Schema.Types.ObjectId; // ID inside mongoose
     boardId: Schema.Types.ObjectId; // ID inside mongoose
 }

@@ -1,10 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { BehaviorSubject, Observable, filter, map } from 'rxjs';
-import { Board } from '../interfaces/board.interface';
+import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
-import { Column } from '../interfaces/column.interface';
-import { ColumnInput } from '../interfaces/column-input.interface';
 import { SocketService } from './socket.service';
 import { SocketEvents } from '../enums/socket-events.enum';
 import { Task } from '../interfaces/task.interface';
@@ -20,5 +17,5 @@ export class TasksService {
 
     createTask(taskInput: TaskInput): void {
         this.socketService.emit(SocketEvents.TASK_CREATE, taskInput);
-    } 
+    }
 }

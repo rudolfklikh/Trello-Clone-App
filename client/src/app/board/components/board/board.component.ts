@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { ActivatedRoute, NavigationStart, Router } from '@angular/router';
 import {
   Observable,
@@ -8,8 +8,8 @@ import {
   forkJoin,
   from,
   map,
-  of,
   switchMap,
+  take,
   tap,
 } from 'rxjs';
 import { Board } from 'src/app/shared/interfaces/board.interface';
@@ -23,6 +23,7 @@ import { ColumnInput } from 'src/app/shared/interfaces/column-input.interface';
 import { TasksService } from 'src/app/shared/services/tasks.service';
 import { Task } from 'src/app/shared/interfaces/task.interface';
 import { TaskInput } from 'src/app/shared/interfaces/task-input.interface';
+import { CdkDragDrop } from '@angular/cdk/drag-drop';
 
 @Component({
   selector: 'el-board',
@@ -44,7 +45,8 @@ export class BoardComponent implements OnInit {
     private boardService: BoardService,
     private socketService: SocketService,
     private columnsService: ColumnsService,
-    private tasksService: TasksService
+    private tasksService: TasksService,
+    private cdr: ChangeDetectorRef
   ) {
     const boardId = this.route.snapshot.paramMap.get('boardId');
 
@@ -57,7 +59,10 @@ export class BoardComponent implements OnInit {
     this.data$ = combineLatest([
       this.boardService.board$.pipe(filter(Boolean)),
       this.boardService.columns$,
-    ]).pipe(map(([board, columns]) => ({ board, columns })));
+    ]).pipe(
+      map(([board, columns]) => ({ board, columns })),
+      tap(() => this.cdr.detectChanges())
+    );
   }
 
   ngOnInit(): void {
@@ -78,28 +83,54 @@ export class BoardComponent implements OnInit {
 
     this.socketService
       .listen<Column>(SocketEvents.COLUMNS_CREATE_SUCCESS)
-      .subscribe((column: Column) => {
-        this.boardService.addColumn(column);
-      });
+      .subscribe((column: Column) => this.boardService.addColumn(column));
 
     this.socketService
       .listen<Task>(SocketEvents.TASK_CREATE_SUCCESS)
-      .subscribe((task: Task) => {
-          this.boardService.addTask(task);
-      });
+      .subscribe((task: Task) => this.boardService.addTask(task));
+
+    this.socketService
+      .listen<Column[]>(SocketEvents.COLUMNS_UPDATE_SUCCESS)
+      .pipe(
+        tap((columns: Column[]) => this.boardService.setColumns(columns)),
+        switchMap((columns) => from(columns)),
+        concatMap((column: Column) =>
+          this.tasksService
+            .getTasks(column.id)
+            .pipe(
+              tap((tasks: Task[]) =>
+                this.boardService.setTasks(tasks, column.id)
+              )
+            )
+        )
+      )
+      .subscribe();
   }
 
   fetchData(): void {
     forkJoin([
       this.boardsService.getBoard(this.boardId),
       this.columnsService.getColumns(this.boardId),
-    ]).pipe(
+    ])
+      .pipe(
+        take(1),
         tap(([board]) => this.boardService.setBoard(board)),
+        tap(([_, columns]) =>
+          columns.sort((col1, col2) => col1.orderNumber - col2.orderNumber)
+        ),
+        tap(([_, columns]) => this.boardService.setColumns(columns)),
         switchMap(([_, columns]) => from(columns)),
         concatMap((column: Column) =>
-          this.tasksService.getTasks(column.id).pipe(tap((tasks: Task[]) => this.boardService.addColumn({ ...column, tasks })))
+          this.tasksService
+            .getTasks(column.id)
+            .pipe(
+              tap((tasks: Task[]) =>
+                this.boardService.setTasks(tasks, column.id)
+              )
+            )
         )
-      ).subscribe();
+      )
+      .subscribe();
   }
 
   createColumn(title: string): void {
@@ -115,9 +146,38 @@ export class BoardComponent implements OnInit {
     const taskInput: TaskInput = {
       title,
       boardId: this.boardId,
-      columnId
+      columnId,
     };
 
     this.tasksService.createTask(taskInput);
-  } 
+  }
+
+  changeColumnPosition(event: CdkDragDrop<Column[]>): void {
+    const { previousIndex, currentIndex, item } = event;
+    const { data } = item;
+
+    if (previousIndex !== currentIndex) {
+      const updatedColumn = { ...data, orderNumber: currentIndex } as Column;
+      
+      this.boardService.updateColumn(
+        updatedColumn,
+        previousIndex,
+        currentIndex
+        );
+
+      const columns = [...this.boardService.columns$.getValue()];
+      const mappedColumns = this.updateColumnsOrder(columns)
+
+      this.columnsService.updateColumnsOrder(mappedColumns);
+    }
+  }
+
+  private updateColumnsOrder(columns: Column[]): Column[] {
+    return columns.map((col) => ({
+      ...col,
+      orderNumber: this.boardService.columns$
+        .getValue()
+        .findIndex((c) => c.id === col.id),
+    }));
+  }
 }

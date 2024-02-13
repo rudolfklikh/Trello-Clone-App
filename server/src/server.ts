@@ -82,6 +82,11 @@ io.use(async (socket: Socket, next) => {
         columnsController.createColumn(io, socket, data);
     });
 
+    
+    socket.on(SocketEvents.COLUMNS_UPDATE, (data) => {
+        columnsController.updateColumns(io, socket, data);
+    });
+
     socket.on(SocketEvents.TASK_CREATE, (data) => {
         tasksController.createTask(io, socket, data);
     })

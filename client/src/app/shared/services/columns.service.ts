@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { BehaviorSubject, Observable, filter, map } from 'rxjs';
-import { Board } from '../interfaces/board.interface';
+import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { Column } from '../interfaces/column.interface';
 import { ColumnInput } from '../interfaces/column-input.interface';
@@ -18,5 +17,9 @@ export class ColumnsService {
 
     createColumn(columnInput: ColumnInput): void {
         this.socketService.emit(SocketEvents.COLUMNS_CREATE, columnInput);
-    } 
+    }
+
+    updateColumnsOrder(columns: Column[]): void {
+        this.socketService.emit(SocketEvents.COLUMNS_UPDATE, columns);
+    }
 }
