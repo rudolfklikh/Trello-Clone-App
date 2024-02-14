@@ -1,4 +1,9 @@
-import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component,
+  OnInit,
+} from '@angular/core';
 import { ActivatedRoute, NavigationStart, Router } from '@angular/router';
 import {
   Observable,
@@ -32,7 +37,6 @@ import { CdkDragDrop } from '@angular/cdk/drag-drop';
 })
 export class BoardComponent implements OnInit {
   boardId: string;
-
   data$: Observable<{
     board: Board;
     columns: Column[];
@@ -74,6 +78,10 @@ export class BoardComponent implements OnInit {
     this.initializeListeners();
   }
 
+  trackById(_: number, item: Column | Task) {
+    return item.id;
+  }
+
   initializeListeners(): void {
     this.router.events.subscribe((event) => {
       if (event instanceof NavigationStart) {
@@ -88,6 +96,17 @@ export class BoardComponent implements OnInit {
     this.socketService
       .listen<Task>(SocketEvents.TASK_CREATE_SUCCESS)
       .subscribe((task: Task) => this.boardService.addTask(task));
+
+    this.socketService
+      .listen<{ tasks: Task[]; columnId: string }>(
+        SocketEvents.TASKS_UPDATE_SUCCESS
+      )
+      .pipe(
+        tap((updatedInput) =>
+          this.boardService.setTasks(updatedInput.tasks, updatedInput.columnId)
+        )
+      )
+      .subscribe();
 
     this.socketService
       .listen<Column[]>(SocketEvents.COLUMNS_UPDATE_SUCCESS)
@@ -121,13 +140,12 @@ export class BoardComponent implements OnInit {
         tap(([_, columns]) => this.boardService.setColumns(columns)),
         switchMap(([_, columns]) => from(columns)),
         concatMap((column: Column) =>
-          this.tasksService
-            .getTasks(column.id)
-            .pipe(
-              tap((tasks: Task[]) =>
-                this.boardService.setTasks(tasks, column.id)
-              )
-            )
+          this.tasksService.getTasks(column.id).pipe(
+            tap((tasks) =>
+              tasks.sort((t1, t2) => t1.orderNumber - t2.orderNumber)
+            ),
+            tap((tasks: Task[]) => this.boardService.setTasks(tasks, column.id))
+          )
         )
       )
       .subscribe();
@@ -158,18 +176,62 @@ export class BoardComponent implements OnInit {
 
     if (previousIndex !== currentIndex) {
       const updatedColumn = { ...data, orderNumber: currentIndex } as Column;
-      
-      this.boardService.updateColumn(
+
+      this.boardService.updateColumnOrder(
         updatedColumn,
         previousIndex,
         currentIndex
-        );
+      );
 
       const columns = [...this.boardService.columns$.getValue()];
-      const mappedColumns = this.updateColumnsOrder(columns)
+      const mappedColumns = this.updateColumnsOrder(columns);
 
       this.columnsService.updateColumnsOrder(mappedColumns);
     }
+  }
+
+  changeTaskPosition(event: CdkDragDrop<Task[]>, column: Column): void {
+    const { previousIndex, currentIndex, item } = event;
+    const { data } = item;
+
+    const updatedTask = { ...data, orderNumber: currentIndex } as Task;
+    const isVerticalDrop = data.columnId === column.id;
+
+    this.boardService.updateTaskPosition(
+      updatedTask,
+      column,
+      previousIndex,
+      currentIndex,
+      isVerticalDrop
+    );
+
+    const updatedTasks = this.updateTasksOrder(column);
+
+    this.tasksService.updateTasksOrder(updatedTasks, this.boardId, column.id);
+
+    const previousColumn = [...this.boardService.columns$.getValue()].find(
+      (col) => col.id === updatedTask.columnId
+    );
+
+    if (previousColumn) {
+      this.tasksService.updateTasksOrder(
+        previousColumn.tasks ?? [],
+        this.boardId,
+        previousColumn.id
+      );
+    }
+  }
+
+  private updateTasksOrder(column: Column): Task[] {
+    const columns = [...this.boardService.columns$.getValue()];
+    const updatedColumn = columns.find((col) => col.id === column.id) as Column;
+    const updatedTasks = [...(updatedColumn.tasks ?? [])];
+
+    return updatedTasks.map((task) => ({
+      ...task,
+      columnId: column.id,
+      orderNumber: updatedTasks.findIndex((t) => t.id === task.id),
+    }));
   }
 
   private updateColumnsOrder(columns: Column[]): Column[] {

@@ -61,7 +61,7 @@ export const createTask = async (
 export const updateTasks = async (
   io: Server,
   socket: Socket,
-  data: { tasks: { id: string, orderNumber: string }[], boardId: string }
+  data: { tasks: { id: string, orderNumber: string, columnId: string }[], boardId: string, columnId: string }
 ) => {
   try {
     if (!socket.user) {
@@ -76,7 +76,7 @@ export const updateTasks = async (
 
     for (let index = 0; index < data.tasks.length; index++) {
       const task = data.tasks[index];
-      const doc = await TaskModel.findByIdAndUpdate(task.id, { orderNumber: task.orderNumber },
+      const doc = await TaskModel.findByIdAndUpdate(task.id, { orderNumber: task.orderNumber, columnId: data.columnId },
         {
           new: true,
         }
@@ -84,9 +84,7 @@ export const updateTasks = async (
       returnedArr.push(doc as TaskDocument);
     }
 
-    console.log(returnedArr);
-
-    io.to(data.boardId).emit(SocketEvents.TASKS_UPDATE_SUCCESS, returnedArr);
+    io.to(data.boardId).emit(SocketEvents.TASKS_UPDATE_SUCCESS, { tasks: returnedArr, columnId: data.columnId });
   } catch (error) {
     socket.emit(SocketEvents.TASKS_UPDATE_FAILURE, getErrorMessage(error));
   }
