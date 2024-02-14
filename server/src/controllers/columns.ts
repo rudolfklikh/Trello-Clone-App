@@ -85,7 +85,6 @@ export const updateColumns = async (
       returnedArr.push(doc as ColumnDocument);
     }
 
-
     io.to(data[0].boardId).emit(SocketEvents.COLUMNS_UPDATE_SUCCESS, returnedArr);
   } catch (error) {
     socket.emit(SocketEvents.COLUMNS_UPDATE_FAILURE, getErrorMessage(error));

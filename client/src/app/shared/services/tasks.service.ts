@@ -18,4 +18,8 @@ export class TasksService {
     createTask(taskInput: TaskInput): void {
         this.socketService.emit(SocketEvents.TASK_CREATE, taskInput);
     }
+
+    updateTasksOrder(tasks: Task[], boardId: string, columnId: string): void {
+        this.socketService.emit(SocketEvents.TASKS_UPDATE, { tasks, boardId, columnId });
+    }
 }

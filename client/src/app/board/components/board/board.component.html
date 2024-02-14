@@ -1,13 +1,14 @@
 <el-topbar></el-topbar>
 
 <div class="board" *ngIf="data$ | async as data">
-  <div class="columns" cdkDropList  [cdkDropListData]="data.columns" (cdkDropListDropped)="changeColumnPosition($event)" cdkDropListOrientation="horizontal">
-    <div class="column" *ngFor="let column of data.columns" cdkDrag cdkDragLockAxis="x" [cdkDragData]="column">
+  <div class="columns" cdkDropList cdkDropListGroup [cdkDropListData]="data.columns"
+    (cdkDropListDropped)="changeColumnPosition($event)" cdkDropListOrientation="horizontal">
+    <div class="column" *ngFor="let column of data.columns; trackBy: trackById" cdkDrag cdkDragLockAxis="x" [cdkDragData]="column"
+      cdkDropList (cdkDropListDropped)="changeTaskPosition($event, column)">
       <div class="column-title">{{ column.title }}</div>
 
-
       <div class="tasks">
-        <div *ngFor="let task of column?.tasks" class="task">
+        <div *ngFor="let task of column?.tasks; trackBy: trackById" class="task" cdkDrag [cdkDragData]="task">
           <div class="task-title">{{ task.title }}</div>
         </div>
         <el-inline-form class="create-column-form" defaultText="Add a task" [hasButton]="true" buttonText="Add task"

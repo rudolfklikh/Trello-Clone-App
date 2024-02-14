@@ -1,4 +1,4 @@
-import { moveItemInArray } from '@angular/cdk/drag-drop';
+import { moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { SocketEvents } from 'src/app/shared/enums/socket-events.enum';
@@ -61,12 +61,50 @@ export class BoardService {
     }
   }
 
-  updateColumn(column: Column, previousIndex: number, currentIndex: number): void {
+  updateColumn(column: Column): void {
+    const columns = [...(this.columns$.getValue() ?? [])];
+    const columnIndex = columns.findIndex(col => col.id === column.id);
+
+    columns.splice(columnIndex, 1, column);
+
+    this.columns$.next(columns);
+  }
+
+  updateColumnOrder(column: Column, previousIndex: number, currentIndex: number): void {
     const columns = [...(this.columns$.getValue() ?? [])];
     const columnIndex = columns.findIndex(col => col.id === column.id);
 
     if (columnIndex !== -1) {
       moveItemInArray(columns, previousIndex, currentIndex);
+
+      this.columns$.next(columns);
+    }
+  }
+
+  updateTaskPosition(task: Task, column: Column, previousIndex: number, currentIndex: number, dropVertically: boolean): void {
+    const columns = [...(this.columns$.getValue() ?? [])];
+    const columnIndex = columns.findIndex(col => col.id === task.columnId);
+    const tasks = [...(column.tasks ?? [])];
+
+    if (dropVertically && columnIndex !== -1) {
+
+      moveItemInArray(tasks, previousIndex, currentIndex);
+
+      const updatedColumn = { ...column, tasks: tasks };
+      columns.splice(columnIndex, 1, updatedColumn);
+
+      this.columns$.next(columns);
+    } else if (!dropVertically && columnIndex !== -1 ) {
+      const updatedColumnIndex = columns.findIndex(col => col.id === column.id);
+      const previousTasks = (columns[columnIndex].tasks ?? []);
+
+      transferArrayItem(previousTasks, tasks, previousIndex, currentIndex);
+    
+      const updatedColumn = { ...column, tasks: tasks };
+      const updatedPreviousColumn = { ...columns[columnIndex], tasks: previousTasks };
+
+      columns.splice(columnIndex, 1, updatedPreviousColumn);
+      columns.splice(updatedColumnIndex, 1, updatedColumn);
 
       this.columns$.next(columns);
     }
