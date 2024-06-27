@@ -65,10 +65,10 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "browserTarget": "eltrello:build:production"
+              "buildTarget": "eltrello:build:production"
             },
             "development": {
-              "browserTarget": "eltrello:build:development"
+              "buildTarget": "eltrello:build:development"
             }
           },
           "defaultConfiguration": "development"
@@ -76,7 +76,7 @@
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "eltrello:build"
+            "buildTarget": "eltrello:build"
           }
         },
         "test": {
