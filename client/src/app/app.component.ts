@@ -1,29 +1,24 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject, signal } from '@angular/core';
 import { AuthService } from './auth/services/auth.service';
 import { CurrentUser } from './auth/interfaces/current-user.interface';
 import { SocketService } from './shared/services/socket.service';
+import { take } from 'rxjs';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
 })
 export class AppComponent implements OnInit {
-  title = 'eltrello';
-
-  constructor(private authService: AuthService, private socketService: SocketService) {}
-
+  private readonly authService = inject(AuthService);
+  private readonly socketService = inject(SocketService);
 
   ngOnInit(): void {
-    this.authService.getCurrentUser().subscribe({
+    this.authService.getCurrentUser().pipe(take(1)).subscribe({
       next: (currentUser: CurrentUser) => {
         this.authService.setCurrentUser(currentUser);
         this.socketService.setupSocketConnection(currentUser);
       },
-      error: (_) => {
-        this.authService.setCurrentUser(null);
-      },
+      error: () => this.authService.setCurrentUser(null),
     });
-
-    this.authService.isLoggedIn$.subscribe(res => console.log('IsLoggedIn', res));
   }
 }

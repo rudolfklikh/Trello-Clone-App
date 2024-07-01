@@ -1,0 +1,47 @@
+@use '../../../../styles/mixins' as mixins;
+
+.topbar {
+    @include mixins.flex-builder(flex-end, center);
+
+    animation: topFadeIn 500ms ease-in-out forwards;
+
+    height: var(--header-height);
+    position: fixed;
+    top: 0;
+    width: 100%;
+
+    padding: var(--container-padding);
+    background-color: var(--secondary-background-color);
+    box-shadow: 0 2px 13px var(--shadow-color);
+
+    &__icons-wrapper {
+      @include mixins.flex-builder(center, center);
+
+      & .icon-settings {
+        width: 25px;
+      }
+
+      & img {
+        width: 30px;
+        margin-left: 15px;
+        transition: var(--transition-time);
+        cursor: pointer;
+
+        &:hover {
+            transform: scale(1.1);
+        }
+      }
+    }
+  }
+  
+  @keyframes topFadeIn {
+    0% {
+      top: -40px;
+      opacity: 0;
+    }
+  
+    100% {
+      top: 0;
+      opacity: 1;
+    }
+  }
