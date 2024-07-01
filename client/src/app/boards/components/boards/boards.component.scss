@@ -1,6 +1,30 @@
-@import '../../../../styles/mixins';
+@use '../../../../styles/mixins' as mixins;
 
-.boards-wrapper {
-    height: 100vh;
-    background-color: var(--main-background-color);
+$boardPadding: 60px;
+
+.boards {
+    @include mixins.flex-builder(flex-start, center, column);
+
+    height: 100%;
+
+    &__title {
+        text-align: center;
+        font-size: var(--title-size);
+        animation: opacityFadeIn 1s ease-in-out forwards;
+    }
+
+    &__container {
+        flex: 1;
+        animation: opacityFadeIn 1s ease-in-out forwards;
+    }
+}
+
+@keyframes opacityFadeIn {
+    0% {
+        opacity: 0;
+    }
+
+    100% {
+        opacity: 1;
+    }
 }

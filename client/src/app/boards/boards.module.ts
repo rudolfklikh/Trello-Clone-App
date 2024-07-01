@@ -4,8 +4,7 @@ import { BoardsRoutingModule } from './boards-routing.module';
 import { BoardsComponent } from './components/boards/boards.component';
 import { BoardsService } from '../shared/services/boards.service';
 import { InlineFormComponent } from '../shared/components/inline-form/inline-form.component';
-import { TopbarComponent } from '../shared/components/topbar/topbar.component';
-import { SidebarComponent } from '../shared/components/sidebar/sidebar.component';
+import { BoardsEmptyComponent } from './components/boards-empty/boards-empty.component';
 
 
 @NgModule({
@@ -16,8 +15,7 @@ import { SidebarComponent } from '../shared/components/sidebar/sidebar.component
     CommonModule,
     BoardsRoutingModule,
     InlineFormComponent,
-    TopbarComponent,
-    SidebarComponent
+    BoardsEmptyComponent
   ],
   providers: [
     BoardsService

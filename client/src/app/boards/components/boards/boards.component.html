@@ -1,43 +1,31 @@
-<el-topbar></el-topbar>
-<el-sidebar></el-sidebar>
+<section class="boards">
+    @if (boards()?.length) {
+      <div class="boards__title">My boards</div>
+    }
 
-<main class="boards-wrapper">
-    <div class="boards-page-container">
-      <div class="home-left-sidebar-container">
-        <a
-          routerLink="/boards"
-          class="boards-side-menu-option"
-          routerLinkActive="boards-side-menu-option-selected"
-          >Boards</a
-        >
-        <a
-          routerLink="/"
-          class="boards-side-menu-option"
-          routerLinkActive="boards-side-menu-option-selected"
-          [routerLinkActiveOptions]="{ exact: true }"
-          >Home</a
-        >
-      </div>
+    <div class="boards__container">
+      @if (boards()?.length) {
+
+      } @else {
+        <app-boards-empty></app-boards-empty>
+      }
+    </div>
+
+
+    <!-- <div class="boards-page-container">
       <div class="boards-section-container">
         <div class="my-boards">
           <div class="my-boards-section-header">
             <div class="boards-page-header-name">My boards</div>
           </div>
           <div class="board-tile-list">
-            <el-inline-form
-              class="create-board-form"
-              defaultText="Create new board"
-              (handleSubmit)="createBoard($event)"
-            ></el-inline-form>
-            <a
-              [routerLink]="['/boards', board.id]"
-              *ngFor="let board of boards"
-              class="board-tile"
-            >
+            <el-inline-form class="create-board-form" defaultText="Create new board"
+              (handleSubmit)="createBoard($event)"></el-inline-form>
+            <a [routerLink]="['/boards', board.id]" *ngFor="let board of boards" class="board-tile">
               <div class="board-tile-details-name">{{ board.title }}</div>
             </a>
           </div>
         </div>
       </div>
-    </div>
-</main>
+    </div> -->
+</section>
