@@ -5,7 +5,7 @@ import { BoardsComponent } from './components/boards/boards.component';
 import { BoardsService } from '../shared/services/boards.service';
 import { InlineFormComponent } from '../shared/components/inline-form/inline-form.component';
 import { TopbarComponent } from '../shared/components/topbar/topbar.component';
-import { BoardModule } from '../board/board.module';
+import { SidebarComponent } from '../shared/components/sidebar/sidebar.component';
 
 
 @NgModule({
@@ -17,6 +17,7 @@ import { BoardModule } from '../board/board.module';
     BoardsRoutingModule,
     InlineFormComponent,
     TopbarComponent,
+    SidebarComponent
   ],
   providers: [
     BoardsService

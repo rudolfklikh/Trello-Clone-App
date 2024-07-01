@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
+import { take } from 'rxjs';
 import { Board } from 'src/app/shared/interfaces/board.interface';
 import { BoardsService } from 'src/app/shared/services/boards.service';
 
@@ -8,18 +9,16 @@ import { BoardsService } from 'src/app/shared/services/boards.service';
   styleUrls: ['./boards.component.scss']
 })
 export class BoardsComponent implements OnInit {
+  private readonly boardsService = inject(BoardsService);
+
   boards: Board[] = [];
 
-  constructor(private boardsService: BoardsService) {}
-
   ngOnInit(): void {
-    this.boardsService.getBoards().subscribe((boards) => {
-      this.boards = boards;
-    });
+    this.boardsService.getBoards().pipe(take(1)).subscribe((boards) => this.boards = boards);
   }
 
   createBoard(title: string): void {
-    this.boardsService.createBoard(title).subscribe((createdBoard) => {
+    this.boardsService.createBoard(title).pipe(take(1)).subscribe((createdBoard) => {
       this.boards = [...this.boards, createdBoard];
     });
   }
