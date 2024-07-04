@@ -6,7 +6,7 @@ import {
   withMethods,
   withState,
 } from '@ngrx/signals';
-import { Observable, finalize, take } from 'rxjs';
+import { Observable, delay, finalize, take } from 'rxjs';
 import { Board } from 'src/app/shared/interfaces/board.interface';
 import { BoardsService } from 'src/app/shared/services/boards.service';
 
@@ -33,6 +33,7 @@ export const BoardsStore = signalStore(
         .createBoard(title)
         .pipe(
           take(1),
+          delay(500),
           finalize(() => this.updateIsLoading(false))
         )
         .subscribe((board) => this.patchBoards([board]));

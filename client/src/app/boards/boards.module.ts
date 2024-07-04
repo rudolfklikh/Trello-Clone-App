@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { BoardsRoutingModule } from './boards-routing.module';
 import { BoardsComponent } from './components/boards/boards.component';
 import { BoardsService } from '../shared/services/boards.service';
@@ -15,6 +16,7 @@ import { BoardsStore } from './data-access/boards.store';
   ],
   imports: [
     CommonModule,
+    MatProgressSpinnerModule,
     BoardsRoutingModule,
     InlineFormComponent,
     BoardsEmptyComponent,
