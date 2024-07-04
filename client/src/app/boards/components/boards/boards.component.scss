@@ -54,7 +54,7 @@ $boardPadding: 60px;
 
     &__container {
         @include mixins.flex-builder(flex-start, flex-start);
-        
+
         flex-wrap: wrap;
         gap: 30px;
         animation: opacityFadeIn 500ms ease-in-out forwards;
@@ -86,6 +86,12 @@ $boardPadding: 60px;
                 }
             }
         }
+    }
+
+    &__loading {
+        @include mixins.flex-builder(center, center);
+
+        height: 100%;
     }
 }
 
