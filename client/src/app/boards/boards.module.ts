@@ -5,6 +5,8 @@ import { BoardsComponent } from './components/boards/boards.component';
 import { BoardsService } from '../shared/services/boards.service';
 import { InlineFormComponent } from '../shared/components/inline-form/inline-form.component';
 import { BoardsEmptyComponent } from './components/boards-empty/boards-empty.component';
+import { BoardCardComponent } from './components/boards/board-card/board-card.component';
+import { BoardsStore } from './data-access/boards.store';
 
 
 @NgModule({
@@ -15,10 +17,12 @@ import { BoardsEmptyComponent } from './components/boards-empty/boards-empty.com
     CommonModule,
     BoardsRoutingModule,
     InlineFormComponent,
-    BoardsEmptyComponent
+    BoardsEmptyComponent,
+    BoardCardComponent
   ],
   providers: [
-    BoardsService
+    BoardsService,
+    BoardsStore
   ]
 })
 export class BoardsModule { }

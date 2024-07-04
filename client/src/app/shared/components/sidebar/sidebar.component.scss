@@ -8,7 +8,7 @@ $sidebarImgSize: 30px;
     position: fixed;
     top: 0;
     left: 0;
-    z-index: var(--z-index9999);
+    z-index: var(--z-index999);
 
     animation: leftFadeIn 500ms ease-in-out forwards;
 }
@@ -38,6 +38,7 @@ $sidebarImgSize: 30px;
         position: absolute;
         bottom: var(--container-padding);
     }
+
     // position: relative;
     // width: var(--header-height);
     // height: 100%;
@@ -50,12 +51,12 @@ $sidebarImgSize: 30px;
 
 @keyframes leftFadeIn {
     0% {
-      left: -40px;
-      opacity: 0;
+        left: -40px;
+        opacity: 0;
     }
-  
+
     100% {
-      left: 0;
-      opacity: 1;
+        left: 0;
+        opacity: 1;
     }
-  }
+}

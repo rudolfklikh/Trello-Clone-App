@@ -2,6 +2,8 @@ import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
 import { AuthService } from 'src/app/auth/services/auth.service';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { map } from 'rxjs';
 
 @Component({
   selector: 'el-topbar',
@@ -11,5 +13,7 @@ import { AuthService } from 'src/app/auth/services/auth.service';
   styleUrls: ['./topbar.component.scss']
 })
 export class TopbarComponent {
-  // @TODO add logic regarding topBar nagivation
+  private readonly authService = inject(AuthService);
+
+  protected userInitial = toSignal(this.authService.currentUser$.pipe(map(currentUser => currentUser?.username.slice(0, 1).toUpperCase())))
 }

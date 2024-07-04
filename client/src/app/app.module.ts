@@ -14,6 +14,7 @@ import { SidebarComponent } from './shared/components/sidebar/sidebar.component'
 import { TopbarComponent } from './shared/components/topbar/topbar.component';
 import { provideLottieOptions } from 'ngx-lottie';
 import player from 'lottie-web';
+import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 @NgModule({
   declarations: [AppComponent],
   bootstrap: [AppComponent],
@@ -34,6 +35,7 @@ import player from 'lottie-web';
     }),
     SocketService,
     provideHttpClient(withInterceptorsFromDi()),
+    provideAnimationsAsync(),
   ],
 })
 export class AppModule {}

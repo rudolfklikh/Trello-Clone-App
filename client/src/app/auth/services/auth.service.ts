@@ -12,8 +12,10 @@ import { SocketService } from 'src/app/shared/services/socket.service';
   providedIn: 'root'
 })
 export class AuthService {
-  currentUser$ = new BehaviorSubject<CurrentUser | NullOrUndefined>(undefined);
-  isLoggedIn$: Observable<boolean> = this.currentUser$.pipe(
+  private _currentUser$ = new BehaviorSubject<CurrentUser | NullOrUndefined>(undefined);
+  
+  currentUser$ = this._currentUser$.asObservable();
+  isLoggedIn$: Observable<boolean> = this._currentUser$.pipe(
     filter((currentUser) => currentUser !== undefined),
     map((currentUser) => !!currentUser)
   );
@@ -43,12 +45,12 @@ export class AuthService {
   }
 
   setCurrentUser(currentUser: CurrentUser | null): void {
-    this.currentUser$.next(currentUser);
+    this._currentUser$.next(currentUser);
   }
 
   logout(): void {
     localStorage.removeItem('token');
-    this.currentUser$.next(null);
+    this._currentUser$.next(null);
     this.socketService.disconnect();
   }
 }

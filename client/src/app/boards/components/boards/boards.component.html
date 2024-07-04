@@ -1,31 +1,28 @@
 <section class="boards">
+  @if (!isLoading()) {
     @if (boards()?.length) {
-      <div class="boards__title">My boards</div>
-    }
+      <div class="boards__header">
+        <img class="boards__header__image" src="/assets/groups.svg" alt="groups" title="groups">
+        <div class="boards__header__title">Work Boards</div>
 
-    <div class="boards__container">
-      @if (boards()?.length) {
-
-      } @else {
-        <app-boards-empty></app-boards-empty>
-      }
-    </div>
-
-
-    <!-- <div class="boards-page-container">
-      <div class="boards-section-container">
-        <div class="my-boards">
-          <div class="my-boards-section-header">
-            <div class="boards-page-header-name">My boards</div>
-          </div>
-          <div class="board-tile-list">
-            <el-inline-form class="create-board-form" defaultText="Create new board"
-              (handleSubmit)="createBoard($event)"></el-inline-form>
-            <a [routerLink]="['/boards', board.id]" *ngFor="let board of boards" class="board-tile">
-              <div class="board-tile-details-name">{{ board.title }}</div>
-            </a>
-          </div>
+        <div class="boards__search">
+          <img src="/assets/search.svg" alt="search" title="search">
+          <input type="text" placeholder="Boards search...">
         </div>
       </div>
-    </div> -->
+    }
+
+    <div class="boards__container" [class.boards__container--empty]="!boards()?.length">
+      @if (boards()?.length) {
+        @for (board of boards(); track board.id) {
+          <app-board-card [board]="board"></app-board-card>
+        }
+        <div class="boards__container__add-button" (click)="createNewBoard()">
+          <img src="/assets/plus.svg" alt="add" title="add">
+        </div>
+      } @else {
+        <app-boards-empty (boardCreation)="createBoard($event)"></app-boards-empty>
+      }
+    </div>
+  }
 </section>

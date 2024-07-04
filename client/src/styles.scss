@@ -1,13 +1,15 @@
 @import './styles/reset';
 @import './styles/global';
 @import './styles/mixins';
+@import "~@angular/material/prebuilt-themes/indigo-pink.css";
 
 :root {
     --header-height: 45px;
-    --title-size: 34px;
+    --title-size: 28px;
     --h2-size: 24px;
     --h4-size: 18px;
-    --z-index9999: 9999;
+    --z-index999: 999;
+    --z-index998: 998;
     --container-padding: 6px;
     --main-background-color: #fafafa;
     --secondary-background-color: #ffffff;
