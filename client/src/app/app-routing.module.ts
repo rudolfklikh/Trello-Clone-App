@@ -13,11 +13,6 @@ const routes: Routes = [
         canActivate: [AUTH_GUARD],
       },
       {
-        path: 'home',
-        loadChildren: () =>
-          import('./home/home.module').then((m) => m.HomeModule),
-      },
-      {
         path: 'boards',
         loadChildren: () => import('./boards/boards.module').then((m) => m.BoardsModule),
         canActivate: [HOME_GUARD],
@@ -25,14 +20,14 @@ const routes: Routes = [
       {
         path: '',
         pathMatch: 'full',
-        redirectTo: 'home',
+        redirectTo: 'boards',
       },
     ],
   },
   {
     path: '**',
     pathMatch: 'full',
-    redirectTo: 'home',
+    redirectTo: 'boards',
   },
 ];
 

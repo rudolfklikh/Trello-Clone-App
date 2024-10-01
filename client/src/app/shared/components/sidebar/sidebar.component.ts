@@ -1,4 +1,5 @@
 import { Component, inject } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { Router, RouterModule } from '@angular/router';
 import { AuthService } from 'src/app/auth/services/auth.service';
 
@@ -13,8 +14,10 @@ export class SidebarComponent {
   private readonly authService = inject(AuthService);
   private readonly router = inject(Router);
 
+  protected user = toSignal(this.authService.currentUser$);
+
   logout(): void {
     this.authService.logout();
-    this.router.navigate(['/']);
+    this.router.navigate(['/auth']);
   }
 }

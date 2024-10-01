@@ -21,7 +21,7 @@ export const HOME_GUARD: CanActivateFn = (
         return true;
       }
 
-      router.navigate(['/home']);
+      router.navigate(['/auth']);
       return false;
     })
   );
@@ -40,7 +40,7 @@ export const AUTH_GUARD: CanActivateFn = (
         return true;
       }
 
-      router.navigate(['home']);
+      router.navigate(['/boards']);
       return false;
     })
   );

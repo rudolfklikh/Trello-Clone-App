@@ -15,5 +15,5 @@ import { map } from 'rxjs';
 export class TopbarComponent {
   private readonly authService = inject(AuthService);
 
-  protected userInitial = toSignal(this.authService.currentUser$.pipe(map(currentUser => currentUser?.username.slice(0, 1).toUpperCase())))
+  protected userInitial = toSignal(this.authService.currentUser$.pipe(map(currentUser => currentUser?.username.slice(0, 1).toUpperCase())));
 }
